@@ -1,20 +1,50 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React from "react";
+
+import { StatusBar } from "react-native";
+
+import {
+  Rubik_400Regular,
+  Rubik_500Medium,
+  Rubik_700Bold,
+  Rubik_600SemiBold,
+  useFonts,
+} from "@expo-google-fonts/rubik";
+
+import {
+  Kanit_400Regular,
+  Kanit_500Medium,
+  Kanit_800ExtraBold,
+} from "@expo-google-fonts/kanit";
+
+import {
+  Overpass_800ExtraBold,
+  Overpass_400Regular,
+} from "@expo-google-fonts/overpass";
+
+import { NavigationContainer } from "@react-navigation/native";
+import { Navigation } from "./src/routes";
+import { Loading } from "./src/components/loading";
 
 export default function App() {
+  const [isLoading] = useFonts({
+    Rubik_400Regular,
+    Rubik_500Medium,
+    Rubik_700Bold,
+    Rubik_600SemiBold,
+    Kanit_400Regular,
+    Kanit_500Medium,
+    Overpass_800ExtraBold,
+    Overpass_400Regular,
+  });
+
+  if (!isLoading) {
+    return <Loading />;
+  }
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <NavigationContainer>
+      <Navigation />
+      <StatusBar barStyle="dark-content" backgroundColor="#fff" />
+    </NavigationContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
