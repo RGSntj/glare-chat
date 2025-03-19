@@ -1,20 +1,20 @@
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { HomeScreen } from "../screens/home";
-import { LoginPage } from "../screens/login";
-import { RootStackParamList } from "../types/navigation";
-
-const S = createNativeStackNavigator<RootStackParamList>();
+import { useEffect, useState } from "react";
+import { getUserData } from "../storages/userStorage";
+import { PrivateRoutes } from "./privateRoutes";
+import { PublicRoutes } from "./publicRoutes";
 
 export function Navigation() {
-  return (
-    <S.Navigator
-      screenOptions={{
-        headerShown: false,
-      }}
-      initialRouteName="Login"
-    >
-      <S.Screen name="Home" component={HomeScreen} />
-      <S.Screen name="Login" component={LoginPage} />
-    </S.Navigator>
-  );
+  const [isUserLogged, setIsUserLogged] = useState(false);
+
+  useEffect(() => {
+    async function fetchUserLogged() {
+      const userLogged = await getUserData();
+
+      setIsUserLogged(!!userLogged);
+    }
+
+    fetchUserLogged();
+  }, []);
+
+  return isUserLogged ? <PrivateRoutes /> : <PublicRoutes />;
 }

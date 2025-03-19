@@ -1,19 +1,40 @@
+import { useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
+import { getUserData, User } from "../../storages/userStorage";
+import { socket } from "../../services/socket";
+
 import { FONTS } from "../../utils/fonts";
 
 export function Header() {
+  const [userData, setUserData] = useState<User | null>(null);
+  const [notification, setNotification] = useState<boolean>(false);
+
+  useEffect(() => {
+    async function fetchUserData() {
+      const user = await getUserData();
+
+      setUserData(user);
+    }
+
+    socket.on("receiveNotification", () => {
+      setNotification(true);
+    });
+
+    fetchUserData();
+  }, []);
+
   return (
     <View style={styles.container}>
       <View style={styles.profileContainer}>
-        <Text style={styles.username}>Olá, Rodrygo!</Text>
+        <Text style={styles.username}>Olá, {userData?.username} !</Text>
         <Text style={styles.unreadText}>0 Mensagens não lidas</Text>
       </View>
 
       <View style={styles.contentRight}>
         <TouchableOpacity activeOpacity={0.7} style={styles.button}>
-          <View style={styles.unreadIcon} />
+          {notification && <View style={styles.unreadIcon} />}
 
           <FontAwesome6 name="bell" size={15} color="#757575" />
         </TouchableOpacity>

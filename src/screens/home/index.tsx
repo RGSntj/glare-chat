@@ -11,18 +11,14 @@ import { Header } from "../../components/header";
 import { Storys } from "../../components/storys";
 import { FONTS } from "../../utils/fonts";
 
-import {
-  Entypo,
-  Ionicons,
-  FontAwesome6,
-  MaterialCommunityIcons,
-} from "@expo/vector-icons";
+import { Entypo, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { Chat } from "../../components/chat";
 
 import { animated, easings, useSpring } from "@react-spring/native";
 import { useNavigation } from "@react-navigation/native";
 import { socket } from "../../services/socket";
-import { NavigationProp, RootStackParamList } from "../../types/navigation";
+import { NavigationProp } from "../../types/navigation";
+import { getUserData, removeUserData } from "../../storages/userStorage";
 
 export function HomeScreen() {
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
@@ -47,8 +43,10 @@ export function HomeScreen() {
     setIsMenuOpen(false);
   }
 
-  function handleLoggout() {
+  async function handleLoggout() {
     socket.disconnect();
+
+    await removeUserData();
 
     navigate("Login");
   }
@@ -57,6 +55,18 @@ export function HomeScreen() {
     ...styles.menu,
     transform: [{ translateY: springs.y.to([0, 1], [300, 0]) }],
   };
+
+  useEffect(() => {
+    socket.connect();
+
+    async function registerSocket() {
+      const user = await getUserData();
+
+      socket.emit("registerSocket", user.code);
+    }
+
+    registerSocket();
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>

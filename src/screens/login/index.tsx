@@ -3,22 +3,17 @@ import { Text, View, TextInput, TouchableOpacity } from "react-native";
 import { s } from "./styles";
 import { useState } from "react";
 import { api } from "../../services/api";
-import {
-  CommonActions,
-  StackActions,
-  useNavigation,
-} from "@react-navigation/native";
-import { socket } from "../../services/socket";
+import { CommonActions, useNavigation } from "@react-navigation/native";
+import { storeUserData } from "../../storages/userStorage";
+import { NavigationProp } from "../../types/navigation";
 
 export function LoginPage() {
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
 
-  const navigation = useNavigation();
+  const navigation = useNavigation<NavigationProp>();
 
   async function handleLogin() {
-    socket.connect();
-
     try {
       const response = await api.post("/login", {
         username,
@@ -26,8 +21,12 @@ export function LoginPage() {
 
       const { code } = response.data;
 
-      console.log(code);
-      socket.emit("registerSocket", code);
+      const userData = {
+        code,
+        username,
+      };
+
+      await storeUserData(userData);
 
       // navegando para a tela principal e removendo a de login do historico
       navigation.dispatch(
