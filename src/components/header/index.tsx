@@ -6,10 +6,14 @@ import { getUserData, User } from "../../storages/userStorage";
 import { socket } from "../../services/socket";
 
 import { FONTS } from "../../utils/fonts";
+import { useNavigation } from "@react-navigation/native";
+import { NavigationProp } from "../../types/navigation";
 
 export function Header() {
   const [userData, setUserData] = useState<User | null>(null);
   const [notification, setNotification] = useState<boolean>(false);
+
+  const { navigate } = useNavigation<NavigationProp>();
 
   useEffect(() => {
     async function fetchUserData() {
@@ -33,7 +37,11 @@ export function Header() {
       </View>
 
       <View style={styles.contentRight}>
-        <TouchableOpacity activeOpacity={0.7} style={styles.button}>
+        <TouchableOpacity
+          activeOpacity={0.7}
+          style={styles.button}
+          onPress={() => navigate("Notifications")}
+        >
           {notification && <View style={styles.unreadIcon} />}
 
           <FontAwesome6 name="bell" size={15} color="#757575" />

@@ -8,22 +8,24 @@ import { storeUserData } from "../../storages/userStorage";
 import { NavigationProp } from "../../types/navigation";
 
 export function LoginPage() {
-  const [username, setUsername] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
 
   const navigation = useNavigation<NavigationProp>();
 
   async function handleLogin() {
     try {
-      const response = await api.post("/login", {
-        username,
+      const response = await api.post("/users/login", {
+        email,
+        password,
       });
 
-      const { code } = response.data;
+      const { code, username, token } = response.data;
 
       const userData = {
         code,
         username,
+        token,
       };
 
       await storeUserData(userData);
@@ -57,12 +59,12 @@ export function LoginPage() {
 
       <View style={s.containerForm}>
         <View style={s.labelsForm}>
-          <Text style={s.labelUsername}>Usuário</Text>
+          <Text style={s.labelUsername}>E-mail</Text>
           <TextInput
             style={s.input}
-            placeholder="Nome de usuário..."
-            onChangeText={setUsername}
-            value={username}
+            placeholder="Digite o e-mail cadastrado"
+            onChangeText={setEmail}
+            value={email}
           />
         </View>
 
