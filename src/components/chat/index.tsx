@@ -1,15 +1,30 @@
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Image,
+  TouchableOpacityProps,
+} from "react-native";
 import { FONTS } from "../../utils/fonts";
 
-interface ChatProps {
+import defaultProfile from "../../assets/profile-2.png";
+
+interface ChatProps extends TouchableOpacityProps {
   username: string;
 }
 
-export function Chat({ username }: ChatProps) {
+export function Chat({ username, ...rest }: ChatProps) {
   return (
-    <TouchableOpacity style={s.container} activeOpacity={0.8}>
+    <TouchableOpacity style={s.container} activeOpacity={0.8} {...rest}>
       <View style={s.profileContainer}>
-        <View style={s.profileIcon} />
+        <View style={s.profileIcon}>
+          <Image
+            source={defaultProfile}
+            resizeMode="contain"
+            style={{ maxHeight: 55, maxWidth: 55 }}
+          />
+        </View>
 
         <View style={s.userInfo}>
           <Text style={s.username}>{username}</Text>
@@ -17,7 +32,7 @@ export function Chat({ username }: ChatProps) {
         </View>
       </View>
 
-      <Text style={s.lastHourMessage}>18:10</Text>
+      <Text style={s.lastHourMessage}>11:10</Text>
     </TouchableOpacity>
   );
 }
@@ -34,15 +49,15 @@ const s = StyleSheet.create({
   profileContainer: {
     display: "flex",
     flexDirection: "row",
-    gap: 10,
+    gap: 15,
     alignItems: "center",
     marginBottom: -5,
   },
 
   profileIcon: {
-    height: 55,
-    width: 55,
-    backgroundColor: "#F3ABA7",
+    maxHeight: 60,
+    maxWidth: 60,
+    backgroundColor: "#3B3561",
     borderRadius: 60 / 2,
   },
 

@@ -22,11 +22,12 @@ import { NavigationProp } from "../../types/navigation";
 import { getUserData, removeUserData } from "../../storages/userStorage";
 import { api } from "../../services/api";
 import { Friend } from "../../interfaces/friends";
+import { IRooms } from "../../interfaces/rooms";
 
 export function HomeScreen() {
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
 
-  const [friends, setFriends] = useState<Friend[]>([]);
+  const [rooms, setRooms] = useState<IRooms[]>([]);
 
   const { navigate } = useNavigation<NavigationProp>();
 
@@ -74,19 +75,27 @@ export function HomeScreen() {
       try {
         const user = await getUserData();
 
-        const friends = await api.get("/friends", {
+        const rooms = await api.get("/rooms", {
           headers: {
             Authorization: `Bearer ${user!.token}`,
           },
         });
 
-        setFriends(friends.data);
+        setRooms(rooms.data);
       } catch (error) {
         console.log("Ocorreu um erro ao buscar a lista de amigos.");
       }
     }
 
     Promise.allSettled([registerSocket(), fetchAllFriends()]);
+  }, []);
+
+  useEffect(() => {
+    socket.emit("isUserOnline");
+
+    return () => {
+      socket.off("isUserOnline");
+    };
   }, []);
 
   return (
@@ -102,10 +111,19 @@ export function HomeScreen() {
       </View>
 
       <FlatList
-        data={friends}
-        keyExtractor={(f) => f.id}
+        data={rooms}
+        keyExtractor={(room) => room.id}
         renderItem={({ item }) => {
-          return <Chat username={item.username} />;
+          return (
+            <Chat
+              username={item.user.username}
+              onPress={() =>
+                navigate("Chat", {
+                  id: item.id,
+                })
+              }
+            />
+          );
         }}
         ListEmptyComponent={() => {
           return (
