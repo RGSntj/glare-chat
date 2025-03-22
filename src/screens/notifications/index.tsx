@@ -8,11 +8,12 @@ import { useEffect, useState } from "react";
 import { api } from "../../services/api";
 import { getUserData } from "../../storages/userStorage";
 import { FriendsInvites } from "../../interfaces/FriendsInvites";
+import { NavigationProp } from "../../types/navigation";
 
 export function NotificationScreen() {
   const [inviteFriends, setInviteFriends] = useState<FriendsInvites[]>([]);
 
-  const { goBack } = useNavigation();
+  const { goBack, navigate } = useNavigation<NavigationProp>();
 
   useEffect(() => {
     async function fetchAllFriendsRequest() {
@@ -21,7 +22,7 @@ export function NotificationScreen() {
 
         const response = await api.get("/friends/pendings", {
           headers: {
-            Authorization: `Bearer ${userLogged.token}`,
+            Authorization: `Bearer ${userLogged!.token}`,
           },
         });
 
@@ -33,6 +34,26 @@ export function NotificationScreen() {
 
     fetchAllFriendsRequest();
   }, []);
+
+  async function handleAcceptInvite(id: string) {
+    try {
+      const userLogged = await getUserData();
+
+      await api.put(
+        `/friends/accept/${id}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${userLogged!.token}`,
+          },
+        }
+      );
+
+      navigate("Home");
+    } catch (error) {
+      console.log("Ocorreu um erro ao aceitar o pedido de amizade.", error);
+    }
+  }
 
   return (
     <View style={s.container}>
@@ -63,7 +84,9 @@ export function NotificationScreen() {
                 </View>
 
                 <View style={s.icons}>
-                  <TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => handleAcceptInvite(friend.id)}
+                  >
                     <Ionicons name="checkmark" size={24} color="#affc41" />
                   </TouchableOpacity>
 

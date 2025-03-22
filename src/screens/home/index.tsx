@@ -62,9 +62,9 @@ export function HomeScreen() {
   };
 
   useEffect(() => {
-    socket.connect();
-
     async function registerSocket() {
+      socket.connect();
+
       const user = await getUserData();
 
       socket.emit("registerSocket", user!.code);
