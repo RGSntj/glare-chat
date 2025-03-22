@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import {
+  FlatList,
   Pressable,
   SafeAreaView,
   StyleSheet,
@@ -19,9 +20,13 @@ import { useNavigation } from "@react-navigation/native";
 import { socket } from "../../services/socket";
 import { NavigationProp } from "../../types/navigation";
 import { getUserData, removeUserData } from "../../storages/userStorage";
+import { api } from "../../services/api";
+import { Friend } from "../../interfaces/friends";
 
 export function HomeScreen() {
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
+
+  const [friends, setFriends] = useState<Friend[]>([]);
 
   const { navigate } = useNavigation<NavigationProp>();
 
@@ -62,10 +67,26 @@ export function HomeScreen() {
     async function registerSocket() {
       const user = await getUserData();
 
-      socket.emit("registerSocket", user.code);
+      socket.emit("registerSocket", user!.code);
     }
 
-    registerSocket();
+    async function fetchAllFriends() {
+      try {
+        const user = await getUserData();
+
+        const friends = await api.get("/friends", {
+          headers: {
+            Authorization: `Bearer ${user!.token}`,
+          },
+        });
+
+        setFriends(friends.data);
+      } catch (error) {
+        console.log("Ocorreu um erro ao buscar a lista de amigos.");
+      }
+    }
+
+    Promise.allSettled([registerSocket(), fetchAllFriends()]);
   }, []);
 
   return (
@@ -80,7 +101,53 @@ export function HomeScreen() {
         <Entypo name="dots-three-horizontal" size={20} color="#222" />
       </View>
 
-      <Chat />
+      <FlatList
+        data={friends}
+        keyExtractor={(f) => f.id}
+        renderItem={({ item }) => {
+          return <Chat username={item.username} />;
+        }}
+        ListEmptyComponent={() => {
+          return (
+            <View
+              style={{
+                alignItems: "center",
+                // justifyContent: "center",
+                display: "flex",
+                flex: 1,
+                marginTop: 40,
+                gap: 15,
+              }}
+            >
+              <Ionicons name="chatbubbles-outline" size={60} color="#ceceec" />
+              <Text
+                style={{
+                  zIndex: 99,
+                  fontFamily: FONTS.kanitRegular,
+                  color: "#727272",
+                  textAlign: "center",
+                }}
+              >
+                Uau! Parece que você está começando sua jornada de amizades!
+                😎🚀
+                {"\n"}
+                <Pressable>
+                  <Text
+                    style={{
+                      fontFamily: FONTS.kanitRegular,
+                      color: "#778da9",
+                      fontSize: 13,
+                      textDecorationLine: "underline",
+                    }}
+                  >
+                    {/* Clique aqui para adicionar um */}
+                  </Text>
+                </Pressable>
+              </Text>
+            </View>
+          );
+        }}
+      />
 
       <TouchableOpacity style={styles.menuButton} onPress={handleOpenMenu}>
         <Entypo name="grid" size={23} color="#727272" />

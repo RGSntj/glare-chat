@@ -14,7 +14,7 @@ export async function storeUserData(userData: User) {
   }
 }
 
-export async function getUserData() {
+export async function getUserData(): Promise<User | undefined> {
   try {
     const user = await AsyncStorage.getItem("@user:data");
 

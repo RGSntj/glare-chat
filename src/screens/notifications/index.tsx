@@ -7,19 +7,7 @@ import { useNavigation } from "@react-navigation/native";
 import { useEffect, useState } from "react";
 import { api } from "../../services/api";
 import { getUserData } from "../../storages/userStorage";
-
-export interface FriendsInvites {
-  id: string;
-  status: string;
-  userId: string;
-  friendId: string;
-  createdAt: Date;
-  updatedAt: Date;
-  sender: {
-    username: string;
-    code: string;
-  };
-}
+import { FriendsInvites } from "../../interfaces/FriendsInvites";
 
 export function NotificationScreen() {
   const [inviteFriends, setInviteFriends] = useState<FriendsInvites[]>([]);
@@ -30,8 +18,6 @@ export function NotificationScreen() {
     async function fetchAllFriendsRequest() {
       try {
         const userLogged = await getUserData();
-
-        console.log(userLogged);
 
         const response = await api.get("/friends/pendings", {
           headers: {

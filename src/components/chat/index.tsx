@@ -1,14 +1,18 @@
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { FONTS } from "../../utils/fonts";
 
-export function Chat() {
+interface ChatProps {
+  username: string;
+}
+
+export function Chat({ username }: ChatProps) {
   return (
     <TouchableOpacity style={s.container} activeOpacity={0.8}>
       <View style={s.profileContainer}>
         <View style={s.profileIcon} />
 
         <View style={s.userInfo}>
-          <Text style={s.username}>Rafael Montes</Text>
+          <Text style={s.username}>{username}</Text>
           <Text style={s.lastMessage}>Corinthians</Text>
         </View>
       </View>
