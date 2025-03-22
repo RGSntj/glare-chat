@@ -90,14 +90,6 @@ export function HomeScreen() {
     Promise.allSettled([registerSocket(), fetchAllFriends()]);
   }, []);
 
-  useEffect(() => {
-    socket.emit("isUserOnline");
-
-    return () => {
-      socket.off("isUserOnline");
-    };
-  }, []);
-
   return (
     <SafeAreaView style={styles.container}>
       <Header />
