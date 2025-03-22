@@ -5,6 +5,7 @@ import {
   View,
   Image,
   TextInput,
+  ScrollView,
 } from "react-native";
 
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
@@ -82,7 +83,19 @@ export function ChatScreen() {
         </View>
       </View>
 
-      <View style={s.containerMessages}></View>
+      <ScrollView style={s.containerMessages}>
+        <View style={s.message}>
+          <Text style={s.contentMessage}>Eaii manooo</Text>
+        </View>
+
+        <View style={[s.message, s.messageRight]}>
+          <Text style={s.contentMessage}>Eaii, suaveee?</Text>
+        </View>
+
+        <View style={s.message}>
+          <Text style={s.contentMessage}>Eaii manooo</Text>
+        </View>
+      </ScrollView>
 
       <View style={s.sendMessagesArea}>
         <View style={s.containerInput}>
@@ -94,7 +107,7 @@ export function ChatScreen() {
         </View>
 
         <TouchableOpacity style={s.sendMessageButton} activeOpacity={0.7}>
-          <Ionicons name="send-outline" size={18} />
+          <Ionicons name="send-outline" size={18} color="#04a777" />
         </TouchableOpacity>
       </View>
     </SafeAreaView>

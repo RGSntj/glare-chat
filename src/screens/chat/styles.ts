@@ -62,6 +62,30 @@ export const s = StyleSheet.create({
   containerMessages: {
     flex: 1,
     backgroundColor: "#f1f1f1",
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+  },
+
+  message: {
+    backgroundColor: "#ffffff",
+    width: "auto",
+    alignSelf: "flex-start",
+    padding: 12.5,
+    borderTopLeftRadius: 30,
+    borderTopEndRadius: 30,
+    borderBottomRightRadius: 30,
+
+    marginBottom: 7,
+  },
+
+  messageRight: {
+    alignSelf: "flex-end",
+    borderBottomRightRadius: 0,
+    borderBottomLeftRadius: 30,
+  },
+
+  contentMessage: {
+    fontFamily: FONTS.regular,
   },
 
   sendMessagesArea: {
@@ -88,7 +112,7 @@ export const s = StyleSheet.create({
   },
 
   plusButton: {
-    backgroundColor: "#9d4edd",
+    backgroundColor: "#04a777",
     borderRadius: 30,
     padding: 5,
   },
