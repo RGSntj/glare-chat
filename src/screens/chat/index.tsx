@@ -1,3 +1,5 @@
+import { useEffect, useRef, useState } from "react";
+
 import {
   SafeAreaView,
   Text,
@@ -5,23 +7,23 @@ import {
   View,
   Image,
   TextInput,
-  ScrollView,
+  FlatList,
 } from "react-native";
 
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 
 import { s } from "./styles";
-import { RootStackParamList } from "../../types/navigation";
-import { useEffect, useState } from "react";
+import defaultProfile from "../../assets/profile-2.png";
+
 import { api } from "../../services/api";
+import { socket } from "../../services/socket";
+
 import { getUserData } from "../../storages/userStorage";
 import { IRoomDetail } from "../../interfaces/roomDetails";
+import { RootStackParamList } from "../../types/navigation";
 
 import { Ionicons } from "@expo/vector-icons";
 import Foundation from "@expo/vector-icons/Foundation";
-
-import defaultProfile from "../../assets/profile-2.png";
-import { socket } from "../../services/socket";
 
 interface Message {
   id: string;
@@ -36,9 +38,15 @@ export function ChatScreen() {
 
   const [messages, setMessages] = useState<Message[]>([]);
 
+  const flatlistRef = useRef<FlatList>(null);
+
   const { params } = useRoute<RouteProp<RootStackParamList>>();
 
   const { goBack } = useNavigation();
+
+  useEffect(() => {
+    flatlistRef.current?.scrollToEnd({ animated: true });
+  }, [messages]);
 
   useEffect(() => {
     async function fetchRoomDetails() {
@@ -71,6 +79,8 @@ export function ChatScreen() {
       };
 
       setMessages((prevState) => [...prevState, allMessages]);
+
+      flatlistRef.current?.scrollToEnd({ animated: true });
     });
 
     return () => {
@@ -129,18 +139,30 @@ export function ChatScreen() {
         </View>
       </View>
 
-      <ScrollView style={s.containerMessages}>
-        {messages.map((m) => {
-          return (
-            <View
-              style={[s.message, m.owner == "me" && s.messageRight]}
-              key={m.id}
-            >
-              <Text style={s.contentMessage}>{m.content}</Text>
-            </View>
-          );
-        })}
-      </ScrollView>
+      <View style={s.containerMessages}>
+        <FlatList
+          ref={flatlistRef}
+          data={messages}
+          keyExtractor={(message) => message.id}
+          renderItem={({ item }) => {
+            return (
+              <View
+                style={[s.message, item.owner == "me" && s.messageRight]}
+                key={item.id}
+              >
+                <Text style={s.contentMessage}>{item.content}</Text>
+              </View>
+            );
+          }}
+          showsVerticalScrollIndicator={false}
+          onContentSizeChange={() =>
+            flatlistRef.current?.scrollToEnd({ animated: true })
+          }
+          style={{
+            paddingTop: 5,
+          }}
+        />
+      </View>
 
       <View style={s.sendMessagesArea}>
         <View style={s.containerInput}>

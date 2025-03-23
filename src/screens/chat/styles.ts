@@ -63,7 +63,6 @@ export const s = StyleSheet.create({
     flex: 1,
     backgroundColor: "#f1f1f1",
     paddingHorizontal: 20,
-    paddingVertical: 10,
   },
 
   message: {
@@ -76,6 +75,7 @@ export const s = StyleSheet.create({
     borderBottomRightRadius: 30,
 
     marginBottom: 7,
+    maxWidth: 250,
   },
 
   messageRight: {

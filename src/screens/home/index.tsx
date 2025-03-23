@@ -21,7 +21,6 @@ import { socket } from "../../services/socket";
 import { NavigationProp } from "../../types/navigation";
 import { getUserData, removeUserData } from "../../storages/userStorage";
 import { api } from "../../services/api";
-import { Friend } from "../../interfaces/friends";
 import { IRooms } from "../../interfaces/rooms";
 
 export function HomeScreen() {
