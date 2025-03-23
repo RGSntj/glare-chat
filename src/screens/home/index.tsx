@@ -34,8 +34,8 @@ export function HomeScreen() {
     y: isMenuOpen ? 1 : 0,
     config: {
       mass: 1,
-      tension: 220,
-      friction: 15,
+      tension: 350,
+      friction: 20,
       easing: easings.easeInOutQuad,
     },
   });
@@ -45,6 +45,8 @@ export function HomeScreen() {
   }
 
   function handleCloseMenu() {
+    if (!isMenuOpen) return;
+
     setIsMenuOpen(false);
   }
 
@@ -90,7 +92,7 @@ export function HomeScreen() {
   }, []);
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} onTouchStart={handleCloseMenu}>
       <Header />
 
       <Storys />
@@ -163,10 +165,6 @@ export function HomeScreen() {
       </TouchableOpacity>
 
       <animated.View style={menuStyles}>
-        <Pressable style={styles.closeMenu} onPress={handleCloseMenu}>
-          <Ionicons name="close" size={23} />
-        </Pressable>
-
         <View style={styles.menuItens}>
           <Pressable
             style={styles.listItem}
@@ -181,17 +179,6 @@ export function HomeScreen() {
               </Text>
             </View>
           </Pressable>
-
-          {/* <Pressable style={styles.listItem}>
-            <FontAwesome6 name="contact-book" size={20} />
-
-            <View>
-              <Text style={styles.labelText}>Novo contato</Text>
-              <Text style={styles.labelDescription}>
-                Adicione um contato para poder enviar mensagem
-              </Text>
-            </View>
-          </Pressable> */}
 
           <Pressable style={styles.listItem}>
             <MaterialCommunityIcons
@@ -266,7 +253,7 @@ const styles = StyleSheet.create({
   },
 
   menu: {
-    borderRadius: 30,
+    borderRadius: 35,
     paddingHorizontal: 20,
     paddingVertical: 24,
     backgroundColor: "#f8f9fa",

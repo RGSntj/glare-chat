@@ -12,7 +12,6 @@ export const s = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    // backgroundColor: "#f1f1f1",
     paddingVertical: 8,
     paddingHorizontal: 5,
   },
@@ -49,7 +48,6 @@ export const s = StyleSheet.create({
   button: {
     height: 40,
     width: 40,
-    // backgroundColor: "#f5f5f5",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
@@ -62,12 +60,11 @@ export const s = StyleSheet.create({
   containerMessages: {
     flex: 1,
     backgroundColor: "#f1f1f1",
-    paddingHorizontal: 20,
+    // paddingHorizontal: 20,
   },
 
   message: {
     backgroundColor: "#ffffff",
-    width: "auto",
     alignSelf: "flex-start",
     padding: 11,
     borderTopLeftRadius: 10,
@@ -82,13 +79,33 @@ export const s = StyleSheet.create({
     alignSelf: "flex-end",
     borderBottomRightRadius: 0,
     borderBottomLeftRadius: 10,
-    backgroundColor: "#75bda4",
+    backgroundColor: "#e8e8e8",
+  },
+
+  messageInfo: {
+    display: "flex",
+    flexDirection: "row",
+    gap: 5,
+  },
+
+  messageRow: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 3,
   },
 
   contentMessage: {
-    // fontFamily: FONTS.regular,
-    fontSize: 13.5,
-    // color: "white",
+    color: "#000000",
+  },
+
+  myMessage: {
+    color: "#",
+  },
+
+  hoursSentAt: {
+    fontSize: 10,
+    alignSelf: "flex-end",
+    color: "#96939b",
   },
 
   sendMessagesArea: {
@@ -122,12 +139,9 @@ export const s = StyleSheet.create({
 
   input: {
     flex: 1,
-    fontFamily: FONTS.regular,
   },
 
   sendMessageButton: {
-    // backgroundColor: "#f2f2f2",
     padding: 10,
-    // borderRadius: 60 / 2,
   },
 });

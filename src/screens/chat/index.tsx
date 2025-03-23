@@ -8,6 +8,8 @@ import {
   Image,
   TextInput,
   FlatList,
+  ImageBackground,
+  LayoutChangeEvent,
 } from "react-native";
 
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
@@ -22,13 +24,19 @@ import { getUserData } from "../../storages/userStorage";
 import { IRoomDetail } from "../../interfaces/roomDetails";
 import { RootStackParamList } from "../../types/navigation";
 
-import { Ionicons } from "@expo/vector-icons";
-import Foundation from "@expo/vector-icons/Foundation";
+import {
+  Ionicons,
+  Foundation,
+  MaterialCommunityIcons,
+} from "@expo/vector-icons";
+
+import { getCurrentTime } from "../../helpers/currentTimeFormat";
 
 interface Message {
   id: string;
   content: string;
   owner: string;
+  sentAt: string;
 }
 
 export function ChatScreen() {
@@ -39,6 +47,7 @@ export function ChatScreen() {
   const [messages, setMessages] = useState<Message[]>([]);
 
   const flatlistRef = useRef<FlatList>(null);
+  const messageWidth = useRef<Record<string, number>>({});
 
   const { params } = useRoute<RouteProp<RootStackParamList>>();
 
@@ -78,6 +87,9 @@ export function ChatScreen() {
         owner: msg.owner === socket.id ? "me" : "other",
       };
 
+      console.log("Mensagem recebida: ");
+      console.log(allMessages);
+
       setMessages((prevState) => [...prevState, allMessages]);
 
       flatlistRef.current?.scrollToEnd({ animated: true });
@@ -93,10 +105,11 @@ export function ChatScreen() {
   function handleSendMessage() {
     if (!messageContent.trim()) return;
 
-    const message = {
+    const message: Message = {
       id: `${socket.id}-${Date()}`,
       owner: "me",
       content: messageContent,
+      sentAt: getCurrentTime(),
     };
 
     socket.emit("chatMessage", params?.id, message);
@@ -104,6 +117,12 @@ export function ChatScreen() {
     setMessages([...messages, message]);
 
     setMessageContent("");
+  }
+
+  function handleLayout(itemId: string, e: LayoutChangeEvent) {
+    if (!messageWidth.current[itemId]) {
+      messageWidth.current[itemId] = e.nativeEvent.layout.width;
+    }
   }
 
   return (
@@ -145,12 +164,44 @@ export function ChatScreen() {
           data={messages}
           keyExtractor={(message) => message.id}
           renderItem={({ item }) => {
+            const width = messageWidth.current[item.id] || 0;
+
             return (
               <View
                 style={[s.message, item.owner == "me" && s.messageRight]}
                 key={item.id}
+                onLayout={(e) => handleLayout(item.id, e)}
               >
-                <Text style={s.contentMessage}>{item.content}</Text>
+                <View style={[s.messageInfo, width >= 150 && s.messageRow]}>
+                  <Text
+                    style={[
+                      s.contentMessage,
+                      item.owner == "me" && s.myMessage,
+                    ]}
+                  >
+                    {item.content}
+                  </Text>
+
+                  <View
+                    style={{
+                      display: "flex",
+                      flexDirection: "row",
+                      alignItems: "center",
+                      gap: 5,
+                      alignSelf: "flex-end",
+                    }}
+                  >
+                    <Text style={s.hoursSentAt}>{item.sentAt}</Text>
+
+                    {item.owner == "me" && (
+                      <MaterialCommunityIcons
+                        name="checkbox-multiple-marked-circle-outline"
+                        size={15}
+                        color="#96939b"
+                      />
+                    )}
+                  </View>
+                </View>
               </View>
             );
           }}
@@ -159,7 +210,7 @@ export function ChatScreen() {
             flatlistRef.current?.scrollToEnd({ animated: true })
           }
           style={{
-            // paddingTop: 5,
+            paddingHorizontal: 15,
             paddingVertical: 5,
           }}
         />
@@ -184,7 +235,14 @@ export function ChatScreen() {
           activeOpacity={0.7}
           onPress={handleSendMessage}
         >
-          <Ionicons name="send-outline" size={18} color="#04a777" />
+          <Ionicons
+            name="send-outline"
+            size={18}
+            color="#04a777"
+            style={{
+              transform: [{ rotate: "-30deg" }],
+            }}
+          />
         </TouchableOpacity>
       </View>
     </SafeAreaView>
