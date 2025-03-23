@@ -13,15 +13,15 @@ export const s = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     // backgroundColor: "#f1f1f1",
-    paddingVertical: 10,
-    paddingHorizontal: 20,
+    paddingVertical: 8,
+    paddingHorizontal: 5,
   },
 
   rightContent: {
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
-    gap: 10,
+    gap: 5,
   },
 
   username: {
@@ -69,23 +69,26 @@ export const s = StyleSheet.create({
     backgroundColor: "#ffffff",
     width: "auto",
     alignSelf: "flex-start",
-    padding: 12.5,
-    borderTopLeftRadius: 30,
-    borderTopEndRadius: 30,
-    borderBottomRightRadius: 30,
+    padding: 11,
+    borderTopLeftRadius: 10,
+    borderTopEndRadius: 10,
+    borderBottomRightRadius: 10,
 
     marginBottom: 7,
-    maxWidth: 250,
+    maxWidth: 300,
   },
 
   messageRight: {
     alignSelf: "flex-end",
     borderBottomRightRadius: 0,
-    borderBottomLeftRadius: 30,
+    borderBottomLeftRadius: 10,
+    backgroundColor: "#75bda4",
   },
 
   contentMessage: {
-    fontFamily: FONTS.regular,
+    // fontFamily: FONTS.regular,
+    fontSize: 13.5,
+    // color: "white",
   },
 
   sendMessagesArea: {
@@ -93,26 +96,26 @@ export const s = StyleSheet.create({
     justifyContent: "center",
     flexDirection: "row",
     alignItems: "center",
-    // paddingVertical: 20,
-    height: 90,
     paddingHorizontal: 20,
+    paddingVertical: 9.5,
     gap: 10,
+    backgroundColor: "#f1f1f1",
   },
 
   containerInput: {
-    backgroundColor: "#f2f2f2",
+    backgroundColor: "#e8e8e8",
     borderRadius: 30,
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
     gap: 10,
-    height: 50,
+    height: 45,
     paddingHorizontal: 10,
     flex: 1,
   },
 
   plusButton: {
-    backgroundColor: "#04a777",
+    backgroundColor: "#e1e1e1",
     borderRadius: 30,
     padding: 5,
   },

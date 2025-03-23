@@ -159,7 +159,8 @@ export function ChatScreen() {
             flatlistRef.current?.scrollToEnd({ animated: true })
           }
           style={{
-            paddingTop: 5,
+            // paddingTop: 5,
+            paddingVertical: 5,
           }}
         />
       </View>
@@ -167,7 +168,7 @@ export function ChatScreen() {
       <View style={s.sendMessagesArea}>
         <View style={s.containerInput}>
           <TouchableOpacity style={s.plusButton} activeOpacity={0.7}>
-            <Ionicons name="add" size={20} color="#ffffff" />
+            <Ionicons name="albums-outline" size={20} color="#000" />
           </TouchableOpacity>
 
           <TextInput
