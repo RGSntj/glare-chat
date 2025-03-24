@@ -8,11 +8,12 @@ import {
   Image,
   TextInput,
   FlatList,
-  ImageBackground,
   LayoutChangeEvent,
 } from "react-native";
 
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
+
+import { v4 as uuidv4 } from "uuid";
 
 import { s } from "./styles";
 import defaultProfile from "../../assets/profile-2.png";
@@ -31,20 +32,15 @@ import {
 } from "@expo/vector-icons";
 
 import { getCurrentTime } from "../../helpers/currentTimeFormat";
-
-interface Message {
-  id: string;
-  content: string;
-  owner: string;
-  sentAt: string;
-}
+import { IMessage } from "../../interfaces/messages";
 
 export function ChatScreen() {
   const [room, setRoom] = useState<IRoomDetail | null>(null);
-
   const [messageContent, setMessageContent] = useState<string>("");
-
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<IMessage[]>([]);
+  const [isLoadingMessage, setIsLoadingMessage] = useState<
+    Record<string, boolean>
+  >({});
 
   const flatlistRef = useRef<FlatList>(null);
   const messageWidth = useRef<Record<string, number>>({});
@@ -75,20 +71,34 @@ export function ChatScreen() {
       }
     }
 
+    async function fetchMessagesOnRoom() {
+      try {
+        const user = await getUserData();
+
+        const response = await api.get(`/rooms/messages/${params?.id}`, {
+          headers: {
+            Authorization: `Bearer ${user?.token}`,
+          },
+        });
+
+        console.log(response.data);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
     fetchRoomDetails();
+    fetchMessagesOnRoom();
   }, []);
 
   useEffect(() => {
     socket.emit("joinRoom", params?.id);
 
-    socket.on("newChatMessage", (msg) => {
-      const allMessages: Message = {
+    socket.on("newChatMessage", (msg: IMessage) => {
+      const allMessages: IMessage = {
         ...msg,
         owner: msg.owner === socket.id ? "me" : "other",
       };
-
-      console.log("Mensagem recebida: ");
-      console.log(allMessages);
 
       setMessages((prevState) => [...prevState, allMessages]);
 
@@ -102,21 +112,51 @@ export function ChatScreen() {
     };
   }, []);
 
-  function handleSendMessage() {
+  async function handleSendMessage() {
     if (!messageContent.trim()) return;
 
-    const message: Message = {
-      id: `${socket.id}-${Date()}`,
-      owner: "me",
+    const messageId = uuidv4();
+
+    const message: IMessage = {
+      id: messageId,
       content: messageContent,
-      sentAt: getCurrentTime(),
+      createdAt: new Date(),
+      owner: "me",
     };
 
-    socket.emit("chatMessage", params?.id, message);
+    console.log(message);
 
-    setMessages([...messages, message]);
+    setIsLoadingMessage({
+      [message.id]: true,
+    });
 
+    setMessages((prevState) => [...prevState, message]);
     setMessageContent("");
+
+    try {
+      const user = await getUserData();
+
+      await api.post(
+        `/messages/create/${params?.id}`,
+        {
+          content: messageContent,
+          messageId,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${user?.token}`,
+          },
+        }
+      );
+
+      socket.emit("chatMessage", params?.id, message);
+    } catch (error) {
+      console.log("Erro ao enviar uma mensagem.");
+    } finally {
+      setIsLoadingMessage({
+        [message.id]: false,
+      });
+    }
   }
 
   function handleLayout(itemId: string, e: LayoutChangeEvent) {
@@ -193,13 +233,20 @@ export function ChatScreen() {
                   >
                     <Text style={s.hoursSentAt}>{item.sentAt}</Text>
 
-                    {item.owner == "me" && (
-                      <MaterialCommunityIcons
-                        name="checkbox-multiple-marked-circle-outline"
-                        size={15}
-                        color="#96939b"
-                      />
-                    )}
+                    {item.owner == "me" &&
+                      (isLoadingMessage[item.id] ? (
+                        <Ionicons
+                          name="time-outline"
+                          size={15}
+                          color="#96939b"
+                        />
+                      ) : (
+                        <MaterialCommunityIcons
+                          name="checkbox-multiple-marked-circle-outline"
+                          size={15}
+                          color="#96939b"
+                        />
+                      ))}
                   </View>
                 </View>
               </View>

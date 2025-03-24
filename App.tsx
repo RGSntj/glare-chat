@@ -2,6 +2,8 @@ import React from "react";
 
 import { StatusBar } from "react-native";
 
+import "react-native-get-random-values";
+
 import {
   Rubik_400Regular,
   Rubik_500Medium,
