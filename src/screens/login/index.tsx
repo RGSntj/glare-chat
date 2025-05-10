@@ -20,9 +20,10 @@ export function LoginPage() {
         password,
       });
 
-      const { code, username, token } = response.data;
+      const { code, username, token, userId } = response.data;
 
       const userData = {
+        userId,
         code,
         username,
         token,

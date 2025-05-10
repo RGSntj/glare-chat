@@ -10,6 +10,7 @@ import { FONTS } from "../../utils/fonts";
 
 import defaultProfile from "../../assets/profile-2.png";
 
+// teste de comentario
 interface ChatProps extends TouchableOpacityProps {
   username: string;
 }

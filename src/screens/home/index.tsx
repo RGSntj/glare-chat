@@ -15,7 +15,6 @@ import { FONTS } from "../../utils/fonts";
 import { Entypo, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { Chat } from "../../components/chat";
 
-import { animated, easings, useSpring } from "@react-spring/native";
 import { useNavigation } from "@react-navigation/native";
 import { socket } from "../../services/socket";
 import { NavigationProp } from "../../types/navigation";
@@ -23,31 +22,39 @@ import { getUserData, removeUserData } from "../../storages/userStorage";
 import { api } from "../../services/api";
 import { IRooms } from "../../interfaces/rooms";
 
+import Animated, {
+  interpolate,
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+} from "react-native-reanimated";
+
 export function HomeScreen() {
-  const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
+  const menuOpen = useSharedValue(0);
 
   const [rooms, setRooms] = useState<IRooms[]>([]);
 
   const { navigate } = useNavigation<NavigationProp>();
 
-  const springs = useSpring({
-    y: isMenuOpen ? 1 : 0,
-    config: {
-      mass: 1,
-      tension: 350,
-      friction: 20,
-      easing: easings.easeInOutQuad,
-    },
-  });
-
   function handleOpenMenu() {
-    setIsMenuOpen(true);
+    menuOpen.value = withSpring(menuOpen.value === 0 ? 1 : 0, {
+      mass: 1,
+      damping: 20,
+      stiffness: 350,
+      overshootClamping: false,
+      restDisplacementThreshold: 0.01,
+      restSpeedThreshold: 0.01,
+    });
   }
 
   function handleCloseMenu() {
-    if (!isMenuOpen) return;
+    if (menuOpen.value == 0) return;
 
-    setIsMenuOpen(false);
+    menuOpen.value = withSpring(0, {
+      mass: 1,
+      damping: 20,
+      stiffness: 350,
+    });
   }
 
   async function handleLoggout() {
@@ -58,10 +65,13 @@ export function HomeScreen() {
     navigate("Login");
   }
 
-  const menuStyles = {
-    ...styles.menu,
-    transform: [{ translateY: springs.y.to([0, 1], [300, 0]) }],
-  };
+  const menuAnimations = useAnimatedStyle(() => {
+    const translateY = interpolate(menuOpen.value, [0, 1], [300, 0]);
+
+    return {
+      transform: [{ translateY }],
+    };
+  });
 
   useEffect(() => {
     async function registerSocket() {
@@ -74,13 +84,7 @@ export function HomeScreen() {
 
     async function fetchAllFriends() {
       try {
-        const user = await getUserData();
-
-        const rooms = await api.get("/rooms", {
-          headers: {
-            Authorization: `Bearer ${user!.token}`,
-          },
-        });
+        const rooms = await api.get("/rooms");
 
         setRooms(rooms.data);
       } catch (error) {
@@ -164,7 +168,7 @@ export function HomeScreen() {
         <Entypo name="grid" size={23} color="#727272" />
       </TouchableOpacity>
 
-      <animated.View style={menuStyles}>
+      <Animated.View style={[styles.menu, menuAnimations]}>
         <View style={styles.menuItens}>
           <Pressable
             style={styles.listItem}
@@ -208,7 +212,7 @@ export function HomeScreen() {
             </View>
           </Pressable>
         </View>
-      </animated.View>
+      </Animated.View>
     </SafeAreaView>
   );
 }

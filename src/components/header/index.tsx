@@ -19,6 +19,8 @@ export function Header() {
     async function fetchUserData() {
       const user = await getUserData();
 
+      if (!user) return;
+
       setUserData(user);
     }
 

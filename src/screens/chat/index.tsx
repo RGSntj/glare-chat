@@ -21,7 +21,7 @@ import defaultProfile from "../../assets/profile-2.png";
 import { api } from "../../services/api";
 import { socket } from "../../services/socket";
 
-import { getUserData } from "../../storages/userStorage";
+import { getUserData, User } from "../../storages/userStorage";
 import { IRoomDetail } from "../../interfaces/roomDetails";
 import { RootStackParamList } from "../../types/navigation";
 
@@ -56,13 +56,7 @@ export function ChatScreen() {
   useEffect(() => {
     async function fetchRoomDetails() {
       try {
-        const user = await getUserData();
-
-        const roomDetails = await api.get(`/rooms/details/${params?.id}`, {
-          headers: {
-            Authorization: `Bearer ${user?.token}`,
-          },
-        });
+        const roomDetails = await api.get(`/rooms/details/${params?.id}`);
 
         setRoom(roomDetails.data);
       } catch (error) {
@@ -71,36 +65,47 @@ export function ChatScreen() {
       }
     }
 
-    async function fetchMessagesOnRoom() {
-      try {
-        const user = await getUserData();
-
-        const response = await api.get(`/rooms/messages/${params?.id}`, {
-          headers: {
-            Authorization: `Bearer ${user?.token}`,
-          },
-        });
-
-        console.log(response.data);
-      } catch (error) {
-        console.log(error);
-      }
-    }
-
+    /**
+     * @decrapted
+     **/
     fetchRoomDetails();
-    fetchMessagesOnRoom();
+    // async function fetchMessagesOnRoom() {
+    //   try {
+    //     const user = await getUserData();
+
+    //     const response = await api.get(`/rooms/messages/${params?.id}`, {
+    //       headers: {
+    //         Authorization: `Bearer ${user?.token}`,
+    //       },
+    //     });
+
+    //     const messages = response.data as IMessage[];
+
+    //     const chatMessages = messages.map((msg) => ({
+    //       ...msg,
+    //       owner: msg.owner === socket.id ? "me" : "other",
+    //     }));
+
+    //     setMessages(chatMessages);
+    //   } catch (error) {
+    //     console.log(error);
+    //   }
+    // }
+
+    // fetchRoomDetails();
+    // fetchMessagesOnRoom();
   }, []);
 
   useEffect(() => {
     socket.emit("joinRoom", params?.id);
 
     socket.on("newChatMessage", (msg: IMessage) => {
-      const allMessages: IMessage = {
+      const message: IMessage = {
         ...msg,
-        owner: msg.owner === socket.id ? "me" : "other",
+        owner: "other",
       };
 
-      setMessages((prevState) => [...prevState, allMessages]);
+      setMessages((prevState) => [...prevState, message]);
 
       flatlistRef.current?.scrollToEnd({ animated: true });
     });
@@ -124,8 +129,6 @@ export function ChatScreen() {
       owner: "me",
     };
 
-    console.log(message);
-
     setIsLoadingMessage({
       [message.id]: true,
     });
@@ -134,20 +137,10 @@ export function ChatScreen() {
     setMessageContent("");
 
     try {
-      const user = await getUserData();
-
-      await api.post(
-        `/messages/create/${params?.id}`,
-        {
-          content: messageContent,
-          messageId,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${user?.token}`,
-          },
-        }
-      );
+      await api.post(`/messages/create/${params?.id}`, {
+        content: messageContent,
+        messageId,
+      });
 
       socket.emit("chatMessage", params?.id, message);
     } catch (error) {
@@ -231,7 +224,9 @@ export function ChatScreen() {
                       alignSelf: "flex-end",
                     }}
                   >
-                    <Text style={s.hoursSentAt}>{item.sentAt}</Text>
+                    <Text style={s.hoursSentAt}>
+                      {getCurrentTime(item.createdAt)}
+                    </Text>
 
                     {item.owner == "me" &&
                       (isLoadingMessage[item.id] ? (

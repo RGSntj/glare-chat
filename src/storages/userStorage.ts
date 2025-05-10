@@ -1,6 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export type User = {
+  userId: string;
   username: string;
   code: string;
   token: string;
