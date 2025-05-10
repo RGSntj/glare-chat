@@ -28,16 +28,17 @@ import Animated, {
   useSharedValue,
   withSpring,
 } from "react-native-reanimated";
+import { ListEmptyComponent } from "../../components/list-empty-component";
 
 export function HomeScreen() {
-  const menuOpen = useSharedValue(0);
+  const isMenuOpen = useSharedValue(0);
 
   const [rooms, setRooms] = useState<IRooms[]>([]);
 
   const { navigate } = useNavigation<NavigationProp>();
 
   function handleOpenMenu() {
-    menuOpen.value = withSpring(menuOpen.value === 0 ? 1 : 0, {
+    isMenuOpen.value = withSpring(isMenuOpen.value === 0 ? 1 : 0, {
       mass: 1,
       damping: 20,
       stiffness: 350,
@@ -48,9 +49,9 @@ export function HomeScreen() {
   }
 
   function handleCloseMenu() {
-    if (menuOpen.value == 0) return;
+    if (isMenuOpen.value == 0) return;
 
-    menuOpen.value = withSpring(0, {
+    isMenuOpen.value = withSpring(0, {
       mass: 1,
       damping: 20,
       stiffness: 350,
@@ -66,7 +67,7 @@ export function HomeScreen() {
   }
 
   const menuAnimations = useAnimatedStyle(() => {
-    const translateY = interpolate(menuOpen.value, [0, 1], [300, 0]);
+    const translateY = interpolate(isMenuOpen.value, [0, 1], [300, 0]);
 
     return {
       transform: [{ translateY }],
@@ -123,44 +124,7 @@ export function HomeScreen() {
           );
         }}
         ListEmptyComponent={() => {
-          return (
-            <View
-              style={{
-                alignItems: "center",
-                // justifyContent: "center",
-                display: "flex",
-                flex: 1,
-                marginTop: 40,
-                gap: 15,
-              }}
-            >
-              <Ionicons name="chatbubbles-outline" size={60} color="#ceceec" />
-              <Text
-                style={{
-                  zIndex: 99,
-                  fontFamily: FONTS.kanitRegular,
-                  color: "#727272",
-                  textAlign: "center",
-                }}
-              >
-                Uau! Parece que você está começando sua jornada de amizades!
-                😎🚀
-                {"\n"}
-                <Pressable>
-                  <Text
-                    style={{
-                      fontFamily: FONTS.kanitRegular,
-                      color: "#778da9",
-                      fontSize: 13,
-                      textDecorationLine: "underline",
-                    }}
-                  >
-                    {/* Clique aqui para adicionar um */}
-                  </Text>
-                </Pressable>
-              </Text>
-            </View>
-          );
+          return <ListEmptyComponent />;
         }}
       />
 

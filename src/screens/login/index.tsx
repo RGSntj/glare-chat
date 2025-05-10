@@ -79,6 +79,12 @@ export function LoginPage() {
             value={password}
           />
         </View>
+
+        <TouchableOpacity activeOpacity={0.8}>
+          <Text style={s.forgotPasswordLabel}>
+            Não lembra a senha? A gente te ajuda!
+          </Text>
+        </TouchableOpacity>
       </View>
 
       <TouchableOpacity

@@ -11,7 +11,7 @@ export const s = StyleSheet.create({
   shapeRight: {
     width: 250,
     height: 250,
-    backgroundColor: "#8d94db",
+    backgroundColor: "#2a9d8f",
     padding: 2,
     borderRadius: "50%",
     position: "absolute",
@@ -56,6 +56,14 @@ export const s = StyleSheet.create({
     // color: "#444B59",
   },
 
+  forgotPasswordLabel: {
+    fontFamily: FONTS.regular,
+    fontSize: 11.5,
+    textDecorationLine: "underline",
+    // color: "#edede9",
+    alignSelf: "flex-end",
+  },
+
   containerForm: {
     marginTop: 30,
     display: "flex",
@@ -86,9 +94,9 @@ export const s = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
 
-    backgroundColor: "#8699DA",
+    backgroundColor: "#2a9d8f",
     paddingVertical: 10,
-    borderRadius: 60 / 2,
+    borderRadius: 5,
   },
   labelButton: {
     color: "#fff",
