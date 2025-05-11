@@ -4,10 +4,8 @@ import { FONTS } from "../../utils/fonts";
 export const s = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
-    paddingHorizontal: 20,
-
-    paddingVertical: 20,
+    backgroundColor: "#ffffff",
+    padding: 20,
   },
 
   header: {
@@ -37,12 +35,6 @@ export const s = StyleSheet.create({
     alignItems: "center",
   },
 
-  contentContainer: {
-    display: "flex",
-    alignItems: "center",
-    gap: 15,
-  },
-
   imageContainer: {
     backgroundColor: "#f1f1f1",
     padding: 10,
@@ -55,35 +47,24 @@ export const s = StyleSheet.create({
     justifyContent: "center",
   },
 
-  textForgotPasswordContent: {
+  labelCode: {
     textAlign: "center",
-    fontFamily: FONTS.overpassRegular,
-    fontSize: 17,
-    // letterSpacing: 1.1,
-  },
-
-  inputContainer: {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 10,
-    borderWidth: 1,
-    borderColor: "#f1f1f1",
-    padding: 4,
-    paddingHorizontal: 20,
-    borderRadius: 10,
-
     marginTop: 20,
-    width: "100%",
-  },
-
-  input: {
-    flex: 1,
     fontFamily: FONTS.overpassRegular,
+    fontSize: 14.5,
   },
 
-  errorInput: {
-    borderColor: "#F36A7B",
+  email: {
+    fontFamily: FONTS.overpassExtrabold,
+  },
+
+  pinCodeText: {
+    fontFamily: FONTS.regular,
+  },
+
+  resendCode: {
+    marginTop: 15,
+    fontFamily: FONTS.regular,
   },
 
   buttonSendConfirmation: {

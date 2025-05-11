@@ -6,6 +6,8 @@ export type RootStackParamList = {
   Notifications: undefined;
   Chat: { id: string };
   ForgotPassword: undefined;
+
+  VerifyMail: { email: string };
 };
 
 export type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
