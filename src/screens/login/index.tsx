@@ -7,9 +7,13 @@ import { CommonActions, useNavigation } from "@react-navigation/native";
 import { storeUserData } from "../../storages/userStorage";
 import { NavigationProp } from "../../types/navigation";
 
+import { Feather } from "@expo/vector-icons";
+
 export function LoginPage() {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+
+  const [showPassword, setShowPassword] = useState<boolean>(true);
 
   const navigation = useNavigation<NavigationProp>();
 
@@ -22,14 +26,12 @@ export function LoginPage() {
 
       const { code, username, token, userId } = response.data;
 
-      const userData = {
+      await storeUserData({
         userId,
         code,
         username,
         token,
-      };
-
-      await storeUserData(userData);
+      });
 
       // navegando para a tela principal e removendo a de login do historico
       navigation.dispatch(
@@ -43,11 +45,13 @@ export function LoginPage() {
     }
   }
 
+  function handleForgotPassword() {
+    navigation.navigate("ForgotPassword");
+  }
+
   return (
     <View style={s.container}>
       <View style={s.shapeRight} />
-
-      {/* <View style={s.shapeLeft} /> */}
 
       <View style={s.containerLabels}>
         <Text style={s.labelWelcome}>Bem vindo de volta!</Text>
@@ -66,21 +70,48 @@ export function LoginPage() {
             placeholder="Digite o e-mail cadastrado"
             onChangeText={setEmail}
             value={email}
+            keyboardType="email-address"
           />
         </View>
 
         <View style={s.labelsForm}>
           <Text style={s.labelUsername}>Senha</Text>
-          <TextInput
-            style={s.input}
-            placeholder="Digite sua senha"
-            secureTextEntry={true}
-            onChangeText={setPassword}
-            value={password}
-          />
+          <View
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+          >
+            <TextInput
+              style={[s.input, { flex: 1 }]}
+              placeholder="Digite sua senha"
+              secureTextEntry={showPassword}
+              onChangeText={setPassword}
+              value={password}
+            />
+
+            <TouchableOpacity
+              style={{
+                position: "absolute",
+                right: 10,
+                zIndex: 9999,
+                padding: 7,
+                borderRadius: 5,
+              }}
+              activeOpacity={0.8}
+              onPress={() => setShowPassword(!showPassword)}
+            >
+              {showPassword ? (
+                <Feather name="eye" size={16} />
+              ) : (
+                <Feather name="eye-off" size={16} />
+              )}
+            </TouchableOpacity>
+          </View>
         </View>
 
-        <TouchableOpacity activeOpacity={0.8}>
+        <TouchableOpacity activeOpacity={0.8} onPress={handleForgotPassword}>
           <Text style={s.forgotPasswordLabel}>
             Não lembra a senha? A gente te ajuda!
           </Text>

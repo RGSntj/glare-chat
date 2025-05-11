@@ -16,18 +16,7 @@ export const s = StyleSheet.create({
     borderRadius: "50%",
     position: "absolute",
     top: 75,
-    right: -110,
-  },
-
-  shapeLeft: {
-    width: 250,
-    height: 250,
-    backgroundColor: "#21978B",
-    padding: 2,
-    borderRadius: "50%",
-    position: "absolute",
-    bottom: 120,
-    left: -110,
+    right: -125,
   },
 
   containerLabels: {
@@ -85,7 +74,7 @@ export const s = StyleSheet.create({
     fontFamily: FONTS.regular,
     // borderRadius: 15,
     borderBottomWidth: 1,
-    borderColor: "#789ADE",
+    borderColor: "#2a9d8f",
   },
 
   button: {

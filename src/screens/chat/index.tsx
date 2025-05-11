@@ -21,7 +21,6 @@ import defaultProfile from "../../assets/profile-2.png";
 import { api } from "../../services/api";
 import { socket } from "../../services/socket";
 
-import { getUserData, User } from "../../storages/userStorage";
 import { IRoomDetail } from "../../interfaces/roomDetails";
 import { RootStackParamList } from "../../types/navigation";
 

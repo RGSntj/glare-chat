@@ -4,6 +4,7 @@ import { HomeScreen } from "../screens/home";
 import { LoginPage } from "../screens/login";
 import { NotificationScreen } from "../screens/notifications";
 import { ChatScreen } from "../screens/chat";
+import { ForgotPasswordScreen } from "../screens/forgot-password";
 
 const S = createNativeStackNavigator<RootStackParamList>();
 
@@ -19,6 +20,7 @@ export function PrivateRoutes() {
       <S.Screen name="Notifications" component={NotificationScreen} />
       <S.Screen name="Login" component={LoginPage} />
       <S.Screen name="Chat" component={ChatScreen} />
+      <S.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
     </S.Navigator>
   );
 }
