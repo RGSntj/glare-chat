@@ -19,7 +19,7 @@ export function LoginPage() {
 
   async function handleLogin() {
     try {
-      const response = await api.post("/users/login", {
+      const response = await api.post("/auth/login", {
         email,
         password,
       });

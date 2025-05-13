@@ -86,6 +86,21 @@ export const s = StyleSheet.create({
     borderColor: "#F36A7B",
   },
 
+  errorMessageContainer: {
+    marginTop: 4,
+    backgroundColor: "#F36A7B",
+    alignSelf: "flex-start",
+    borderRadius: 5,
+    paddingHorizontal: 8,
+    opacity: 0.8,
+  },
+
+  contentErrorMessage: {
+    fontFamily: FONTS.overpassRegular,
+    fontSize: 13,
+    color: "#ffffff",
+  },
+
   buttonSendConfirmation: {
     marginTop: 20,
     backgroundColor: "#2a9d8f",

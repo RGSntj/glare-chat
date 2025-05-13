@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import {
   View,
@@ -26,8 +26,12 @@ import {
   ForgotPasswordSchemaType,
 } from "../../schemas/forgot-password-schema";
 import { NavigationProp } from "../../types/navigation";
+import { api } from "../../services/api";
+import { AxiosError } from "axios";
 
 export function ForgotPasswordScreen() {
+  const [errorMessage, setErrorMessage] = useState<string>("");
+
   const { goBack } = useNavigation();
 
   const errorBalance = useSharedValue(0);
@@ -37,6 +41,7 @@ export function ForgotPasswordScreen() {
   const {
     handleSubmit,
     control,
+    setError,
     formState: { errors, isSubmitting },
   } = useForm({
     resolver: zodResolver(forgotPasswordSchema),
@@ -45,12 +50,31 @@ export function ForgotPasswordScreen() {
     },
   });
 
-  function handleSendEmail(data: ForgotPasswordSchemaType) {
-    console.log(data);
+  async function handleSendEmail(data: ForgotPasswordSchemaType) {
+    try {
+      const result = await api.post<{ successful: boolean }>(
+        "/auth/forgot-password",
+        {
+          email: data.email,
+        }
+      );
 
-    navigate("VerifyMail", {
-      email: data.email,
-    });
+      console.log(result.data);
+
+      navigate("VerifyMail", {
+        email: data.email,
+      });
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        if (error.response) {
+          setErrorMessage("E-mail não existe na nossa base de dados.!");
+
+          setError("email", {
+            message: "Email não encontrado na nossa base de dados.",
+          });
+        }
+      }
+    }
   }
 
   useEffect(() => {
@@ -89,7 +113,7 @@ export function ForgotPasswordScreen() {
             <MaterialCommunityIcons
               name="shield-lock-outline"
               size={70}
-              color="#343a40"
+              color={errors?.email ? "#F36A7B" : "#343a40"}
             />
           </View>
 
@@ -129,6 +153,12 @@ export function ForgotPasswordScreen() {
             name="email"
           />
         </Animated.View>
+
+        {errors.email && (
+          <View style={s.errorMessageContainer}>
+            <Text style={s.contentErrorMessage}>{errors.email?.message}</Text>
+          </View>
+        )}
 
         <TouchableOpacity
           style={s.buttonSendConfirmation}

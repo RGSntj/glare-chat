@@ -62,22 +62,24 @@ export const s = StyleSheet.create({
     fontFamily: FONTS.regular,
   },
 
+  errorMessageContainer: {
+    marginTop: 10,
+    backgroundColor: "#F36A7B",
+    alignSelf: "flex-start",
+    borderRadius: 5,
+    marginHorizontal: 15,
+    paddingHorizontal: 15,
+    opacity: 0.8,
+  },
+
+  contentErrorMessage: {
+    fontFamily: FONTS.overpassRegular,
+    fontSize: 13,
+    color: "#ffffff",
+  },
+
   resendCode: {
     marginTop: 15,
-    fontFamily: FONTS.regular,
-  },
-
-  buttonSendConfirmation: {
-    marginTop: 20,
-    backgroundColor: "#2a9d8f",
-    width: "100%",
-    paddingVertical: 12,
-    borderRadius: 5,
-  },
-
-  labelButtonConfirmation: {
-    textAlign: "center",
-    color: "#FFFFFF",
     fontFamily: FONTS.regular,
   },
 });
